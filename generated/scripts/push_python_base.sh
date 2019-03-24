@@ -47,10 +47,10 @@ fi
 cd_into_script_path
 
 ./build_python_base.sh
-docker push kujyp/python_base:_python2.6.9
-docker push kujyp/python_base:_python2.7.15
-docker push kujyp/python_base:_python3.5.6
-docker push kujyp/python_base:_python3.6.7
-docker push kujyp/python_base:_python3.7.1
+docker push kujyp/python_base:python2.6.9
+docker push kujyp/python_base:python2.7.15
+docker push kujyp/python_base:python3.5.6
+docker push kujyp/python_base:python3.6.7
+docker push kujyp/python_base:python3.7.1
 )
 echo -e "${yellow}[INFO] [${BASH_SOURCE[0]}] Done.${nocolor}"

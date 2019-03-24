@@ -46,10 +46,10 @@ fi
 (
 cd_into_script_path
 
-docker build --pull -t kujyp/python_base:_python2.6.9 -f ../dockerfiles/kujyp/python_base/Dockerfile._python2.6.9 .
-docker build --pull -t kujyp/python_base:_python2.7.15 -f ../dockerfiles/kujyp/python_base/Dockerfile._python2.7.15 .
-docker build --pull -t kujyp/python_base:_python3.5.6 -f ../dockerfiles/kujyp/python_base/Dockerfile._python3.5.6 .
-docker build --pull -t kujyp/python_base:_python3.6.7 -f ../dockerfiles/kujyp/python_base/Dockerfile._python3.6.7 .
-docker build --pull -t kujyp/python_base:_python3.7.1 -f ../dockerfiles/kujyp/python_base/Dockerfile._python3.7.1 .
+docker build --pull -t kujyp/python_base:python2.6.9 -f ../dockerfiles/kujyp/python_base/Dockerfile.python2.6.9 .
+docker build --pull -t kujyp/python_base:python2.7.15 -f ../dockerfiles/kujyp/python_base/Dockerfile.python2.7.15 .
+docker build --pull -t kujyp/python_base:python3.5.6 -f ../dockerfiles/kujyp/python_base/Dockerfile.python3.5.6 .
+docker build --pull -t kujyp/python_base:python3.6.7 -f ../dockerfiles/kujyp/python_base/Dockerfile.python3.6.7 .
+docker build --pull -t kujyp/python_base:python3.7.1 -f ../dockerfiles/kujyp/python_base/Dockerfile.python3.7.1 .
 )
 echo -e "${yellow}[INFO] [${BASH_SOURCE[0]}] Done.${nocolor}"

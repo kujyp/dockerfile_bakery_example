@@ -9,31 +9,28 @@
 FROM centos:7
 
 RUN yum install -y \
+ wget gcc make \
+ && rm -rf /var/cache/yum
+
+RUN yum install -y \
  zlib-devel openssl-devel libffi-devel \
  sqlite-devel readline-devel \
  && rm -rf /var/cache/yum
 
-RUN wget https://www.python.org/ftp/python/2.6.9/Python-2.6.9.tgz -O python.tgz \
+RUN wget https://www.python.org/ftp/python/3.7.1/Python-3.7.1.tgz -O python.tgz \
  && tar -xvf python.tgz \
  && mv Python-* python \
  && ( \
   cd python \
-  && ./configure --enable-unicode=ucs4 \
+  && ./configure \
   && make \
   && make install \
  ) \
  && rm -rf python*
 
-ENV PATH=/usr/local/bin:$PATH
+RUN curl https://bootstrap.pypa.io/get-pip.py | python
 
-RUN wget https://pypi.python.org/packages/source/v/virtualenv/virtualenv-15.0.0.tar.gz \
- && tar -zxvf virtualenv*.tar.gz \
- && ( \
-  cd virtualenv-* \
-  && python setup.py install \
- ) \
- && rm -rf virtualenv-*
+RUN python3 -m venv venv
+ENV PATH=/venv/bin:$PATH
 
-RUN curl https://bootstrap.pypa.io/2.6/get-pip.py | python
-
-CMD /bin/bash
+CMD python
