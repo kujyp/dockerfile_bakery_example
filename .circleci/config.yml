@@ -59,12 +59,13 @@ jobs:
       - run:
           name: push
           command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
             tools/push_all.sh
 
 
 workflows:
   version: 2
-  test_build_deploy:
+  buildtest_and_deploy:
     jobs:
       - checks
       - builds:
