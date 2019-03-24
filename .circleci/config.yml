@@ -1,0 +1,78 @@
+version: 2.0
+
+jobs:
+  checks:
+    docker:
+      - image: circleci/python:3.6
+    working_directory: ~/app
+
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+          - v1-dependencies-{{ checksum "requirements.txt" }}
+    - run:
+        name: ensure assembled files committed
+        command: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          if [ ! -z "\$(git status --porcelain)" ]; then
+             echo "Generated files changed. Did you run 'tools/dockerfile_assembler.py'?"
+             exit 1
+          fi
+    - save_cache:
+        paths:
+          - ./venv
+        key: v1-dependencies-{{ checksum "requirements.txt" }}
+    - persist_to_workspace:
+        root: .
+        paths:
+          - .
+
+  builds:
+    docker:
+      - image: circleci/python:3.6
+    working_directory: ~/app
+
+    steps:
+    - attach_workspace:
+        at: ~/app
+    - setup_remote_docker:
+        docker_layer_caching: true
+    - run:
+        name: build
+        command: |
+          tools/build_all.sh
+
+  pushes:
+    docker:
+      - image: circleci/python:3.6
+    working_directory: ~/app
+
+    steps:
+      - attach_workspace:
+          at: ~/app
+      - setup_remote_docker:
+        docker_layer_caching: true
+      - run:
+          name: push
+          command: |
+            tools/push_all.sh
+
+
+workflows:
+  version: 2
+  test_build_deploy:
+    jobs:
+      - checks
+      - builds:
+          requires:
+            - checks
+      - pushes:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - builds
