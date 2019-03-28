@@ -44,6 +44,7 @@ jobs:
     - restore_cache:
         keys:
           - v1-dockercache-{{ .Branch }}
+          - v1-dockercache-master
     - run:
         name: load docker cache
         command: |
