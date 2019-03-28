@@ -59,7 +59,7 @@ jobs:
         name: save docker cache
         command: |
           tools/build_all.sh | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
-          docker save $(cat /tmp/layers.txt) | gzip < ~/app/caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
+          docker save $(cat /tmp/layers.txt) | gzip > ~/app/caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
     - save_cache:
         key: v1-dockercache-{{ .Branch }}
         paths:
