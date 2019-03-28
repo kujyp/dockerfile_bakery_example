@@ -41,10 +41,33 @@ jobs:
         at: ~/app
     - setup_remote_docker:
         docker_layer_caching: true
+    - restore_cache:
+        keys:
+          - v1-dockercache-{{ .Branch }}
+    - run:
+        name: load docker cache
+        command: |
+          if [[ -f ~/app/caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ]]; then
+            gunzip -c ~/app/caches/${CIRCLE_PROJECT_REPONAME}.tar.gz | docker load
+            docker images
+          fi
     - run:
         name: build
         command: |
           tools/build_all.sh
+    - run:
+        name: save docker cache
+        command: |
+          tools/build_all.sh | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
+          docker save $(cat /tmp/layers.txt) | gzip < ~/app/caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
+    - save_cache:
+        key: v1-dockercache-{{ .Branch }}
+        paths:
+          - ~/app/caches/
+    - persist_to_workspace:
+        root: .
+        paths:
+          - .
 
   pushes:
     docker:
@@ -56,6 +79,13 @@ jobs:
           at: ~/app
       - setup_remote_docker:
           docker_layer_caching: true
+      - run:
+          name: load docker cache
+          command: |
+            if [[ -f ~/app/caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ]]; then
+              gunzip -c ~/app/caches/${CIRCLE_PROJECT_REPONAME}.tar.gz | docker load
+              docker images
+            fi
       - run:
           name: push
           command: |
